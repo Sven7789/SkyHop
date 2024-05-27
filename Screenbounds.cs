@@ -1,3 +1,8 @@
+/*
+ Autheur: Sven Nieuwenhuizen
+ Onderwerp: Screenbounds Script
+ Datum: 27-05-2024
+ */
 using UnityEngine;
 
 public class ScreenBounds : MonoBehaviour
