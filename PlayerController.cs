@@ -1,6 +1,6 @@
 /*
  Autheur: Sven Nieuwenhuizen
- Onderwerp: Playercontroller Script
+ Onderwerp: PlayerController
  Datum: 27-05-2024
  */
 using UnityEngine;
@@ -11,49 +11,53 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed = 5f;
     private Rigidbody2D rb;
     private bool isGrounded;
-    private float screenHalfWidth;
+
+    private float screenHalfWidthInWorldUnits;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        // Bereken de halve breedte van het scherm
-        screenHalfWidth = ScreenBounds.screenBounds.x;
+        float halfPlayerWidth = transform.localScale.x / 2;
+        screenHalfWidthInWorldUnits = Camera.main.aspect * Camera.main.orthographicSize + halfPlayerWidth;
     }
 
     void Update()
     {
-        // Bewegen naar links en rechts met A en D
-        float moveInput = 0f;
-        if (Input.GetKey(KeyCode.A))
+        // Springen
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
-            moveInput = -1f;
-        }
-        else if (Input.GetKey(KeyCode.D))
-        {
-            moveInput = 1f;
-        }
-
-        rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
-
-        // Springen met W of Space
-        if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space)) && isGrounded)
-        {
-            Debug.Log("Jump activated");  // Debug bericht voor sprong
-            rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            rb.velocity = Vector2.up * jumpForce;
             isGrounded = false;
         }
 
-        // Beperk de positie binnen het scherm
-        Vector3 position = transform.position;
-        position.x = Mathf.Clamp(position.x, -screenHalfWidth, screenHalfWidth);
-        transform.position = position;
+        // Bewegen naar links en rechts
+        float moveInput = Input.GetAxis("Horizontal");
+        rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
+
+        // Schermwrapping
+        WrapAroundScreen();
+    }
+
+    private void WrapAroundScreen()
+    {
+        Vector3 newPosition = transform.position;
+
+        if (transform.position.x < -screenHalfWidthInWorldUnits)
+        {
+            newPosition.x = screenHalfWidthInWorldUnits;
+        }
+        else if (transform.position.x > screenHalfWidthInWorldUnits)
+        {
+            newPosition.x = -screenHalfWidthInWorldUnits;
+        }
+
+        transform.position = newPosition;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Platform"))
         {
-            Debug.Log("Landed on platform");
             isGrounded = true;
         }
     }
@@ -62,7 +66,6 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Platform"))
         {
-            Debug.Log("Left platform");
             isGrounded = false;
         }
     }
