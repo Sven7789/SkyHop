@@ -3,6 +3,7 @@
  Onderwerp: PlatformGenerator
  Datum: 27-05-2024
  */
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlatformGenerator : MonoBehaviour
@@ -15,6 +16,8 @@ public class PlatformGenerator : MonoBehaviour
 
     private float screenHalfWidth;
     private float platformHalfWidth;
+    private Vector3 spawnPosition = new Vector3();
+    private Queue<GameObject> platforms = new Queue<GameObject>();
 
     void Start()
     {
@@ -22,14 +25,27 @@ public class PlatformGenerator : MonoBehaviour
         screenHalfWidth = Camera.main.aspect * Camera.main.orthographicSize;
         platformHalfWidth = platformPrefab.transform.localScale.x / 2;
 
-        Vector3 spawnPosition = new Vector3();
         spawnPosition.y = startPlatform.position.y;
 
         for (int i = 0; i < numberOfPlatforms; i++)
         {
-            spawnPosition.y += Random.Range(minY, maxY); // Verhoog de y-positie
-            spawnPosition.x = Random.Range(-screenHalfWidth + platformHalfWidth, screenHalfWidth - platformHalfWidth); // Random x-positie binnen het scherm
-            Instantiate(platformPrefab, spawnPosition, Quaternion.identity);
+            SpawnPlatform();
         }
+    }
+
+    void Update()
+    {
+        if (platforms.Peek().transform.position.y < Camera.main.transform.position.y - Camera.main.orthographicSize - platformHalfWidth)
+        {
+            Destroy(platforms.Dequeue());
+            SpawnPlatform();
+        }
+    }
+
+    void SpawnPlatform()
+    {
+        spawnPosition.y += Random.Range(minY, maxY); // Verhoog de y-positie
+        spawnPosition.x = Random.Range(-screenHalfWidth + platformHalfWidth, screenHalfWidth - platformHalfWidth); // Random x-positie binnen het scherm
+        platforms.Enqueue(Instantiate(platformPrefab, spawnPosition, Quaternion.identity));
     }
 }
