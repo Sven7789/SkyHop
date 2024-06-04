@@ -1,3 +1,8 @@
+/*
+ Autheur: Sven Nieuwenhuizen
+ Onderwerp: Bugfix Fixed Scale Script SkyHop
+ Datum: 04-05-2024
+ */
 using UnityEngine;
 
 public class FixedScale : MonoBehaviour

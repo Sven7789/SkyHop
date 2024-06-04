@@ -1,7 +1,7 @@
 /*
  Autheur: Sven Nieuwenhuizen
  Onderwerp: InfiniteBackground Script
- Datum: 27-05-2024
+ Datum: 04-05-2024
  */
 using UnityEngine;
 

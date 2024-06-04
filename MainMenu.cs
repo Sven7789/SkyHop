@@ -1,3 +1,8 @@
+/*
+ Autheur: Sven Nieuwenhuizen
+ Onderwerp: Mainmenu Script SkyHop
+ Datum: 04-05-2024
+ */
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
