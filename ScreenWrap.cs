@@ -11,6 +11,7 @@ public class ScreenWrap : MonoBehaviour
     {
         Vector3 viewportPosition = Camera.main.WorldToViewportPoint(transform.position);
 
+        // Locatie speler berekenen door positie camera 
         if (viewportPosition.x < 0)
         {
             transform.position = new Vector3(Camera.main.ViewportToWorldPoint(new Vector3(1, 0, 0)).x, transform.position.y, transform.position.z);

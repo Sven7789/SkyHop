@@ -7,7 +7,9 @@ using UnityEngine;
 
 public class MovingPlatform : MonoBehaviour
 {
+    // Snelheid van platform
     public float speed = 2f;
+    //afstand die platform aflegd
     public float moveDistance = 3f;
 
     private Vector3 startPosition;
@@ -20,6 +22,7 @@ public class MovingPlatform : MonoBehaviour
 
     void Update()
     {
+        // Als platform naar rechts of links gaat geef snelheid en afstand mee
         if (movingRight)
         {
             transform.Translate(Vector2.right * speed * Time.deltaTime);
