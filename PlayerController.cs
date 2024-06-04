@@ -1,6 +1,6 @@
 /*
  Autheur: Sven Nieuwenhuizen
- Onderwerp: PlayerController
+ Onderwerp: PlayerController Script
  Datum: 27-05-2024
  */
 using UnityEngine;
@@ -12,13 +12,9 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     private bool isGrounded;
 
-    private float screenHalfWidthInWorldUnits;
-
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        float halfPlayerWidth = transform.localScale.x / 2;
-        screenHalfWidthInWorldUnits = Camera.main.aspect * Camera.main.orthographicSize + halfPlayerWidth;
     }
 
     void Update()
@@ -33,25 +29,6 @@ public class PlayerController : MonoBehaviour
         // Bewegen naar links en rechts
         float moveInput = Input.GetAxis("Horizontal");
         rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
-
-        // Schermwrapping
-        WrapAroundScreen();
-    }
-
-    private void WrapAroundScreen()
-    {
-        Vector3 newPosition = transform.position;
-
-        if (transform.position.x < -screenHalfWidthInWorldUnits)
-        {
-            newPosition.x = screenHalfWidthInWorldUnits;
-        }
-        else if (transform.position.x > screenHalfWidthInWorldUnits)
-        {
-            newPosition.x = -screenHalfWidthInWorldUnits;
-        }
-
-        transform.position = newPosition;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -67,6 +44,16 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.CompareTag("Platform"))
         {
             isGrounded = false;
+        }
+    }
+
+    private void CheckScreenWrap()
+    {
+        Vector3 viewportPosition = Camera.main.WorldToViewportPoint(transform.position);
+
+        if (viewportPosition.x < 0 || viewportPosition.x > 1)
+        {
+            transform.position = new Vector3(-transform.position.x, transform.position.y, transform.position.z);
         }
     }
 }
